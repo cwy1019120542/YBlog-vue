@@ -14,7 +14,7 @@
 				</div>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
-				<el-button type="primary" class='submit_button'>登录</el-button>
+				<el-button type="primary" class='submit_button' @click="request_login">登录</el-button>
 			</div>
 		</el-dialog>
 
@@ -31,7 +31,7 @@
 				</el-form-item>
 				<el-form-item label="验证码" prop="captcha">
 					<el-input v-model='register_data.captcha' prefix-icon='el-icon-s-opportunity' maxlength='6' show-word-limit class='captcha_input'></el-input>
-					<el-button class='captcha_button' round :disabled="is_forbid" @click='get_captcha'>获取验证码<span v-show='is_forbid'>({{seconds}}秒)</span></el-button>
+					<el-button class='captcha_button' round :disabled="is_forbid" @click='get_captcha(register_data.email)'>获取验证码<span v-show='is_forbid'>({{seconds}}秒)</span></el-button>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -55,7 +55,7 @@
 				</el-form-item>
 				<el-form-item label="验证码" prop="captcha">
 					<el-input v-model='forget_password_data.captcha' prefix-icon='el-icon-s-opportunity' maxlength='6' show-word-limit class='captcha_input'></el-input>
-					<el-button class='captcha_button' round :disabled="is_forbid" @click='get_captcha'>获取验证码<span v-show='is_forbid'>({{seconds}}秒)</span></el-button>
+					<el-button class='captcha_button' round :disabled="is_forbid" @click='get_captcha(forget_password_data.email)'>获取验证码<span v-show='is_forbid'>({{seconds}}秒)</span></el-button>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -107,8 +107,11 @@
 			}
 		}, 
 		methods: {
-			get_captcha() {
+			get_captcha(email) {
 				if (!this.timer) {
+					requests.post('/captcha', {"email": email}).then(response=>{
+					}).catch(error=>{
+					})
 					this.seconds = 60
 					this.is_forbid = true
 					this.timer = setInterval(()=>{
@@ -121,14 +124,15 @@
 							this.is_forbid = false
 						}
 					}, 1000)
-				}
+				} 
 			}, 
 			show_dialog(name) {
 				for (let key in this.visible) {
 					this.visible[key] = false
 					}
 				this.visible[name] = true
-				}
+				}, 
+			request_login() {},
 			}, 
 	};
 </script>
