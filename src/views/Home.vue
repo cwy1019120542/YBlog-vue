@@ -1,33 +1,22 @@
 <template>
 	<div>
-		<el-button type="primary" @click="LoginDialogVisible = true">登录弹开</el-button>
-		<el-button type="primary" @click="LoginDialogVisible = false">登录收起</el-button>
-		<LoginDialog :LoginDialogVisible="LoginDialogVisible"></LoginDialog>
-		<el-button type="primary" @click="RegisterDialogVisible = true">注册弹开</el-button>
-		<el-button type="primary" @click="RegisterDialogVisible = false">注册收起</el-button>
-		<RegisterDialog :RegisterDialogVisible="RegisterDialogVisible" @showLogin='show_login'></RegisterDialog>
+		<el-button type="primary" @click="dialog_visible='login'">登录</el-button>
+		<el-button type="primary" @click="dialog_visible='register'">注册</el-button>
+		<el-button type="primary" @click="dialog_visible='forget_password'">忘记密码</el-button>
+		<Login :dialog_visible='dialog_visible'></Login>
 	</div>
 </template>
 
 <script>
-import LoginDialog from 'components/LoginDialog.vue'
-import RegisterDialog from 'components/RegisterDialog.vue'
+import Login from 'components/Login.vue'
 	export default {
 		components: {
-			LoginDialog, 
-			RegisterDialog
+			Login
 		}, 
 		data () {
 			return {
-				'LoginDialogVisible': false, 
-				'RegisterDialogVisible': false, 
+				'dialog_visible': ''
 			}
 		}, 
-		methods: {
-			show_login() {
-				this.RegisterDialogVisible = false
-				this.LoginDialogVisible = true
-			}, 
-		}
-	}
+	};
 </script>
