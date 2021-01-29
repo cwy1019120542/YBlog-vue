@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-dialog title="用户登录" :visible.sync="visible['login']" center width='30%'>
-			<el-form :model='login_data' :rules='login_rules' ref='login' label-width='20%' label-position="left">
+			<el-form :model='login_data' :rules='login_rules' ref='login' label-width='20%' label-position="left" hide-required-asterisk>
 				<el-form-item label="邮箱" prop='email'>
 					<el-input v-model='login_data.email' prefix-icon='el-icon-user-solid' maxlength='50' show-word-limit></el-input>
 				</el-form-item>
@@ -19,7 +19,7 @@
 		</el-dialog>
 
 		<el-dialog title="用户注册" :visible.sync="visible['register']" center width='30%'>
-			<el-form :model='register_data' :rules='register_rules' ref='register' label-width='20%' label-position="left">
+			<el-form :model='register_data' :rules='register_rules' ref='register' label-width='20%' label-position="left" hide-required-asterisk>
 				<el-form-item label="邮箱" prop='email'>
 					<el-input v-model='register_data.email' prefix-icon='el-icon-user-solid' maxlength='50' show-word-limit></el-input>
 				</el-form-item>
@@ -42,8 +42,8 @@
 			</div>
 		</el-dialog>
 
-		<el-dialog title="修改密码" :visible.sync="visible['forget_password']" center width='30%'>
-			<el-form :model='forget_password_data' :rules='forget_password_rules' ref='forget_password' label-width='20%' label-position="left">
+		<el-dialog title="重置密码" :visible.sync="visible['forget_password']" center width='30%'>
+			<el-form :model='forget_password_data' :rules='forget_password_rules' ref='forget_password' label-width='20%' label-position="left" hide-required-asterisk>
 				<el-form-item label="邮箱" prop='email'>
 					<el-input v-model='forget_password_data.email' prefix-icon='el-icon-user-solid' maxlength='50' show-word-limit></el-input>
 				</el-form-item>
@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import {v_email, v_password, v_captcha} from 'service/rules.js'
 	export default {
 		props: {
 			'dialog_visible': String
@@ -76,6 +77,24 @@
 			}
 		}, 
 		data() {
+			let register_password_equal = (rule, value, callback)=> {
+				if (value !== this.register_data.password) {
+					callback(new Error("两次输入的密码不一致"))
+				} else {
+					callback()
+				}
+			}
+			let forget_password_password_equal = (rule, value, callback)=> {
+				if (value !== this.forget_password_data.password) {
+					callback(new Error("两次输入的密码不一致"))
+				} else {
+					callback()
+				}
+			}
+			let register_password_rule = v_password.slice()
+			let forget_password_password_rule = v_password.slice()
+			register_password_rule.push({validator: register_password_equal, trigger: 'blur'})
+			forget_password_password_rule.push({validator: forget_password_password_equal, trigger: 'blur'})
 			return {
 				'visible': {
 					'login': false, 
@@ -101,9 +120,22 @@
 					'check_new_password': '', 
 					'captcha': ''
 				}, 
-				'login_rules': {}, 
-				'register_rules': {}, 
-				'forget_password_rules': {}
+				'login_rules': {
+					'email': v_email, 
+					'password': v_password
+				}, 
+				'register_rules': {
+					'email': v_email, 
+					'password': v_password, 
+					'check_password': register_password_rule, 
+					'captcha': v_captcha
+				}, 
+				'forget_password_rules': {
+					'email': v_email, 
+					'new_password': v_password, 
+					'check_new_password': forget_password_password_rule, 
+					'captcha': v_captcha
+				}
 			}
 		}, 
 		methods: {
