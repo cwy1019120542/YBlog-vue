@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Message } from 'element-ui';
+import { el_message } from 'service/func_tools.js';
 import { MESSAGES } from 'service/messages.js'
 
 const requests = axios.create({
@@ -20,18 +20,12 @@ let request_err = function (err) {
 
 // http response 拦截器
 let response = function (res) {
-    const data = res.data;
-    return data;
+    return res.data.data;
 };
 
 let response_err = function (err) {
     if (err.response) {
-        Message({
-            message: MESSAGES[err.response.data.error_code],
-            type: 'error',
-            showClose: true, 
-            duration: 5000, 
-        })
+        el_message(MESSAGES[err.response.data.error_code])
     }
     return Promise.reject(err);
 };

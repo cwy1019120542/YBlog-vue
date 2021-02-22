@@ -2,26 +2,26 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
 const debug = process.env.NODE_ENV !== 'production';
-
-import demo from './module/demo';
 const store = new Vuex.Store({
     strict: debug,
     state: {
-        tip: '欢迎使用Vuex',
-    },
-    getters: {
-        tip: state => state.tip,
+        'user_id': 0, 
+        'token': '',
+        'secret': ''
     },
     mutations: {
-        SET_TIP(state, data) {
-            state.tip = data;
+        set_token(state, token) {
+            state.token = token;
         },
+        set_user(state, data) {
+            state.user_id = data.user_id
+            state.secret = data.secret
+        }, 
     },
     actions: {
 
     },
     modules: {
-        demo,
     }
 });
 
