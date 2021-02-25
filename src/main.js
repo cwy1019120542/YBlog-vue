@@ -7,9 +7,8 @@ import 'api/axios';
 import 'element-ui/lib/theme-chalk/index.css';
 import	ElementUI from 'element-ui'
 Vue.use(ElementUI)
-Vue.mixin(mixins);
-Vue.config.productionTip = false;
-//注册element-ui组件
+Vue.mixin(mixins)
+Vue.config.productionTip = false
 new Vue({
     router,
     store,

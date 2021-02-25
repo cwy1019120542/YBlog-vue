@@ -1,4 +1,3 @@
-import { Message } from 'element-ui';
 function check_email(rule, val, callback) {
 	if (/^\w+@(\w+\.)+(com|cn|net)$/.test(val)) {
 		callback()
@@ -6,14 +5,15 @@ function check_email(rule, val, callback) {
 	else {
 		callback(new Error("邮箱格式不正确"))
 	}
+}
 
+function sort_and_connect(data) {
+	let key_list = Object.keys(data)
+	key_list.sort()
+	let str_item_list = []
+	for (let key of key_list) {
+		str_item_list.push(`${key}=${data[key]}`)
+	}
+	return str_item_list.join("&")
 }
-function el_message(message, type='error') {
-	return Message({
-		message: message,
-		type: type,
-		showClose: true, 
-		duration: 5000, 
-	})
-}
-export {check_email, el_message}
+export {check_email, sort_and_connect}

@@ -67,7 +67,8 @@
 
 <script>
 import {v_email, v_password, v_captcha} from 'service/rules.js'
-import {check_email, el_message} from 'service/func_tools.js';
+import {check_email} from 'service/func_tools.js';
+import {el_message} from 'service/messages.js'
 	export default {
 		props: {
 			'dialog_visible': String
@@ -143,12 +144,12 @@ import {check_email, el_message} from 'service/func_tools.js';
 		methods: {
 			request_captcha(email) {
 				if (!/^\w+@(\w+\.)+(com|cn|net)$/.test(email)) {
-					el_message("邮箱格式不正确，请您重新确认")
+					el_message(1101)
 					return
 				}
 				if (!this.timer) {
 					requests.post('/captcha', {"email": email}).then(response => {
-						el_message("验证码发送成功", "success")
+						el_message(1200)
 					})
 					this.seconds = 60
 					this.is_forbid = true
@@ -168,20 +169,27 @@ import {check_email, el_message} from 'service/func_tools.js';
 				for (let key in this.visible) {
 					this.visible[key] = false
 					}
-				this.visible[name] = true
-				}, 
+				if (name){
+					this.visible[name] = true
+				}
+			}, 
 			request_login() {
 				requests.post('/secret', this.login_data).then(response=>{
-					console.log(response)
-					this.$store.commit('set_user', response)
-					console.log(this.$store.state.secret)
+					let user_id = response.user_id
+					let secret = response.secret
+					localStorage.setItem('user_id', user_id)
+					localStorage.setItem('secret', secret)
+					requests.post(`/user/${user_id}/token`, this.login_data).then(response=>{
+						console.log(response)
+					})
 				})
+				
 
 			},
 			request_register() {
 				requests.post('/register', this.register_data).then(response=>{
-					el_message("注册成功，请您登录", "success")
-					setTimeout(this.show_dialog('login'), 2000)
+					el_message(1201)
+					setTimeout(()=>{this.show_dialog(null)}, 1000)
 				})
 			}, 
 			request_reset_password() {}, 
